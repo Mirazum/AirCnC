@@ -1,17 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import Heading from '../Heading/Heading';
 import Container from '../Shared/Container/Container';
+import Loader from '../Shared/Loader';
 import Card from './Card';
 
 const Rooms = () => {
     const [rooms, setRooms] = useState([])
+    const [loading, setLoading] = useState(false)
     useEffect(() => {
-        // setLoading(true)
+        setLoading(true)
         fetch('./rooms.json')
           .then(res => res.json())
-          .then(data => setRooms(data) )
-          .catch (err=>console.log(err))
- }, [])
+          .then(data => {
+            if (category) {
+              const filtered = data.filter(room => room.category === category)
+              setRooms(filtered)
+            } else {
+              setRooms(data)
+            }
+    
+            setLoading(false)
+          })
+          .catch(err => console.log(err))
+      }, [])
+
+      if (loading) {
+        return <Loader />
+      }
     return (
         <Container>
         {rooms && rooms.length > 0 ? (
